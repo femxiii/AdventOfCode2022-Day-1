@@ -19,41 +19,45 @@ func main() {
 	currentElfCals := 0
 	currentElf := 0
 
-	elfMap := make(map[int]int)
+	// Slice of my array looks like
+	type elfCals struct {
+		Elf  int
+		Cals int
+	}
 
+	// Array
+	var elfMap []elfCals
+
+	// Each line of file
 	for scanner.Scan() {
 
+		// if it's a blank line, bank the cals, increment the elf
 		if scanner.Text() == "" {
-			elfMap[currentElf] = currentElfCals
+			elfMap = append(elfMap, elfCals{currentElf, currentElfCals})
 			currentElf += 1
 			currentElfCals = 0
 		} else {
+			// if it's not a new elf, add the cals to the running total
 			i, _ := strconv.Atoi(scanner.Text())
 			currentElfCals += i
 		}
 	}
 
-	type keyValue struct {
-		Key   int
-		Value int
-	}
-
-	var sortedSet []keyValue
-	for k, v := range elfMap {
-		sortedSet = append(sortedSet, keyValue{k, v})
-	}
-
-	sort.Slice(sortedSet, func(i, j int) bool {
-		return sortedSet[i].Value > sortedSet[j].Value
+	// sort the slices
+	sort.Slice(elfMap, func(i, j int) bool {
+		return elfMap[i].Cals > elfMap[j].Cals
 	})
 
-	for _, kv := range sortedSet {
-		fmt.Printf("%d, %d\n", kv.Key, kv.Value)
+	// print the array for fun
+	for _, kv := range elfMap {
+		fmt.Printf("%d, %d\n", kv.Elf, kv.Cals)
 	}
 
-	topThree := sortedSet[0:3]
+	// list the top three
+	topThree := elfMap[0:3]
 	fmt.Printf("Top 3: %v \n", topThree)
 
-	fmt.Println(sortedSet[0].Value + sortedSet[1].Value + sortedSet[2].Value)
+	// add their cals together
+	fmt.Println(elfMap[0].Cals + elfMap[1].Cals + elfMap[2].Cals)
 
 }
